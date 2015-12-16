@@ -1,9 +1,11 @@
 F2etest
 ===================
 
-![imgs/logo.png](imgs/logo.png)
+![imgs/logo.png](https://raw.githubusercontent.com/alibaba/f2etest/master/imgs/logo.png)
 
 F2etest是一个面向前端、测试、产品等岗位的多浏览器兼容性测试整体解决方案。
+
+注：F2e test = Front to End Test = 前端测试
 
 在之前，我们一般有三种解决方案：
 
@@ -15,9 +17,13 @@ F2etest是一个面向前端、测试、产品等岗位的多浏览器兼容性�
 
 在这之前我们需要20台机器，相比之下，至少10倍的硬件利用率提升。
 
+再加上我们平时做多浏览器测试时，并不是满负荷工作。经常是测试一会，开发一会，或者是忙点别的事，因此理论并发能力至少可以再乘2，就是说一台4核服务器，理论上跑40人同时在线，非常轻松。
+
+但是在此之前，如果我们是单人虚拟机模式的话，当你没在测试时，CPU、内存、硬盘，全部都是处在浪费状态。
+
 相比之前的方案，我们有以下优势：
 
-1. 10倍硬件利用率，降低企业运营成本
+1. 10倍以上硬件利用率，降低企业运营成本
 2. 非常棒的用户体验，极大的提高测试效率
 3. 真实浏览器环境，还原真实测试场景
 
@@ -27,12 +33,31 @@ F2etest是一个面向前端、测试、产品等岗位的多浏览器兼容性�
 2. Windows Server: Server版Windows，最大化复用机器资源
 3. hostsShare: 跨浏览器，跨服务器的hosts共享
 
+成功案例
+===================
+
+[![imgs/alibaba.png](https://raw.githubusercontent.com/alibaba/f2etest/master/imgs/alibaba.png)](http://www.alibabagroup.com/)
+
+如果您使用了我们的解决方案，请联系我们添加在此处。
+
 产品截图
 ===================
 
-![imgs/screenshot1.png](imgs/screenshot1.png)
+![imgs/screenshot1.jpg](https://raw.githubusercontent.com/alibaba/f2etest/master/imgs/screenshot1.jpg)
 
-![imgs/screenshot2.png](imgs/screenshot2.png)
+![imgs/screenshot2.jpg](https://raw.githubusercontent.com/alibaba/f2etest/master/imgs/screenshot2.jpg)
+
+Chrome插件:
+
+![imgs/chrome.png](https://raw.githubusercontent.com/alibaba/f2etest/master/imgs/chrome.png)
+
+Windows:
+
+![imgs/windows.jpg](https://raw.githubusercontent.com/alibaba/f2etest/master/imgs/windows.jpg)
+
+Mac:
+
+![imgs/mac.jpg](https://raw.githubusercontent.com/alibaba/f2etest/master/imgs/mac.jpg)
 
 安全风险警示(非常重要)
 ==================
@@ -59,49 +84,30 @@ F2etest是一个面向前端、测试、产品等岗位的多浏览器兼容性�
 
     clone后，会发现以下几个目录：
 
-    1. f2etest-guacamole: 这是我们定制过的开源版本，方便f2etest进行调用
-    2. f2etest-web: f2etest的WEB站点，用来提供f2etest服务
-    3. f2etest-client: f2etest的执行机客户端站点，主要提供API给f2etest-web使用
-    4. hostsshare-server: 实现跨浏览器跨系统的hosts服务器
-    5. hostsShare-client: 安装在f2etest远程环境中的客户端，用来修改hostsShare上的hosts绑定
+    1. `f2etest-web`: f2etest的WEB站点，用来提供f2etest服务，用户最终就是访问这个站点使用f2etest
+    2. `f2etest-guacamole`: 这是我们定制过的开源版本，方便f2etest进行调用
+    3. `f2etest-client`: f2etest的执行机客户端站点，主要提供API给f2etest-web使用，用来同步用户账号
+    4. `hostsShare-client`: 安装在f2etest远程环境中的客户端，用来修改f2etest-web上的hosts绑定
+    5. `f2etest-local`: 用来在本机安装代理服务器，并将f2etest所有访问反向代理到本地，以共享本机的hosts绑定，本组件已发布至npm，无需安装，详细使用请至系统内查看帮助
+    6. `f2etest-chrome`: chrome浏览器下的客户端，无需打开f2etest网站，即可访问f2etest中的所有APP，本组件已发布至chrome官方市场，无需安装，详细使用请至系统内查看帮助
 
-    下面会分别针对以上5个组件，会有针对性的安装教程。
+    下面分别针对前4个组件，会有针对性的安装教程。
 
-    我们建议将1，2，4组件安装在同一台Linux服务器上，建议使用CentOs系统。
+    我们建议将1，2组件安装在同一台Linux服务器上，操作系统为CentOs。
 
 3. 安装f2etest-guacamole
 
     f2etest-guacamole是定制版本的guacamole，安装方法请查看：[Install Guacamole](./f2etest-guacamole/Install.md)
 
-4. 安装hostsShare-server
-
-    hostsShare是为了实现跨浏览器的hosts共享，一次修改，所有浏览器同时生效。
-
-    由于我们使用的是Windows Server操作系统，并且基于多用户实现的机器资源复用，存在一个严重的缺陷。
-
-    那就是hosts是系统级共享的，任何一个用户修改hosts文件，都会影响所有别的用户。
-
-    因此hostsShare正是为了解决这个问题而开发，同时也让hosts实现了跨浏览器跨服务器成为现实。
-
-    安装方法：
-
-        cd hostsshare-server
-        npm install
-        node app
-
-    启动成功后，会发现shostsShare默认工作在：4000端口号
-
-    小建议：
-
-    1. 建议使用pm2或forever等组件实现系统开机自动运行。
-
-5. 安装mysql
+4. 安装mysql
 
     安装mysql: [https://www.mysql.com/](https://www.mysql.com/)，如果已安装好，请略过安装步骤。
 
-    初始化表结构：f2etest-web/f2etest.sql，建议表名：f2etest
+    新建库：f2etest
 
-6. 配置f2etest-web
+    初始化表结构：f2etest-web/f2etest.sql
+
+5. 配置f2etest-web
 
     初始化f2etest-web
 
@@ -133,7 +139,7 @@ F2etest是一个面向前端、测试、产品等岗位的多浏览器兼容性�
 
     > 这里的server必需为server.json中已配置的id。program为可选参数，如果不填则直接连接桌面。
 
-    修改`sso.js`：
+    修改`lib/sso.js`：
 
     > 由于f2etest系统要求必需是登录用户才能访问，因此必需要对接SSO系统才能工作。
 
@@ -141,16 +147,16 @@ F2etest是一个面向前端、测试、产品等岗位的多浏览器兼容性�
 
     启动f2etest-web服务：
 
-        node dispatch.js
+        node app.js
 
     启动成功后，可以发现WEB服务默认工作在：3000端口号
 
     小建议：
 
-    1. 为了方便用户使用，建议安装nginx等软件做反向代理，将端口号隐藏掉。
+    1. 为了方便用户使用，建议安装nginx等软件做反向代理，将80端口反向到3000端口，以将3000端口号隐藏起来。
     2. 建议使用pm2或forever等组件实现系统开机自动运行。
 
-7. 安装windows server机群
+6. 安装windows server机群
 
     * 1号机：Server 2003: IE6
     * 2号机：Server 2003: IE7
@@ -159,7 +165,9 @@ F2etest是一个面向前端、测试、产品等岗位的多浏览器兼容性�
     * 5号机：Server 2008: IE10
     * 6号机：Server 2008: IE11
 
-    将来如果出现IE12，可以即时增加新的服务器，用来部署新浏览器或软件。
+    将来如果出现新的浏览器，可以即时增加新的服务器，用来部署新浏览器或软件。
+
+    如果在现有运行一段时间的系统中部署新服务器，请访问以下URL来同步所有账号：`http://f2etest.xxx.com/syncAllRemoteUsers`
 
     由于Server 2008可安装的最低IE版本是8，因此IE6和IE7只能安装在Server 2003系统中。
 
@@ -170,7 +178,7 @@ F2etest是一个面向前端、测试、产品等岗位的多浏览器兼容性�
     3. IIS：用来部署f2etest-client，由于我们的脚本使用asp编写，因此请安装asp相关支持组件
     4. 设置当前主机每天凌晨自动重启：防止开机久了，系统出现不稳定
     5. 用户组配置：请将Authenticated Users添加到Remote Desktop Users，允许普通用户可以登录远程
-    6. 安装curl: 将curl的路径添加到PATH路径中，以供APP快捷方式调用
+    6. 安装curl: 将curl的路径添加到系统变量的PATH路径中，以供APP快捷方式调用
     7. 配置Remote App：如果是2008操作系统，需要将被远程的程序添加到Remote App，否则无法远程，添加快捷方式时请选择：允许任何命令行参数
     8. 安装周边软件：输入法，Flash等
 
@@ -178,7 +186,7 @@ F2etest是一个面向前端、测试、产品等岗位的多浏览器兼容性�
 
     1. chrome由于和远程桌面有点小冲突，必需安装在2003操作系统中
     2. 使用频率比较低的浏览器，建议硬件配置可以适当降低
-    3. 2008如果默认安装的是IE10浏览器，可以从安装补丁上卸载，从而降级到IE8
+    3. 2008如果默认安装的是IE10浏览器，可以从安装补丁上卸载，从而降级到IE8，但是没办法降级到IE6或IE7
     4. 建议在任务计划程序中添加每周磁盘碎片整理，以保持最高工作性能
 
     IE浏览器安全级别低解决方案：
@@ -199,17 +207,18 @@ F2etest是一个面向前端、测试、产品等岗位的多浏览器兼容性�
     3. 下一步选择：`计算机帐户`，再点击下一步
     4. 在`受信任的根证书颁发机构`的`证书`栏目中添加CA即可
 
-8. 部署f2etest-client
+7. 部署f2etest-client
 
     每台Server服务器上都需要部署f2etest-client，实现以下两个功能：
 
     1. 提供API给f2etest-web调用，用来初始化用户账号
     2. 远程桌面连接时，需要打开指定的浏览器或软件，并统计相应软件的使用次数
 
-    bat文件中需要修改两处地方：
+    请根据需要选择合适的bat模板，模板中需要修改3处地方：
 
-    1. 代理服务器pac地址：修改为hostsShare服务所在的Ip地址
-    2. 最后一行修改为当前服务的部署域名，用来统计用户的应用使用情况
+    1. `f2etestDomain`: 修改为内部部署的f2etest域名
+    2. `appid`: 修改为f2etest-web中配置的相同应用id
+    3. `打开应用`： 替换为应用的程序路径
 
     由于需要在当前系统中添加新用户，f2etest-web站点必需设置为administrator权限，否则无法工作
 
@@ -219,13 +228,13 @@ F2etest是一个面向前端、测试、产品等岗位的多浏览器兼容性�
 
     重要安全说明：f2etest-client的www目录必需要设置为仅管理员有权限，否则任何人都可以查看到setuser.asp中的apiKey，会有严重的安全风险
 
-9. 安装hostsShare-client
+8. 安装hostsShare-client
 
     hostsShare-client基于node-webkit开发，默认已经提供了一个编译版本在build目录中，可以直接部署使用。
 
-    建议选择IE11所在机器上部署hostsShare-client。
+    本应用使用频率较高，建议选择CPU比较空闲的机器上部署。
 
-    hostsShare-client的bat在f2etest-client中的app中：hostsshare.bat
+    hostsShare-client的bat可直接复制f2etest-client/app/中的：`禁用代理.bat`
 
 使用
 ===================
@@ -240,7 +249,7 @@ F2etest是一个面向前端、测试、产品等岗位的多浏览器兼容性�
 
     桌面方式基于TSWF Schema协议实现的分发，目前Windows和MAC下都有完美的协议实现软件。
 
-    Win7天然就支持远程TSWF分发技术，Mac下仅需安装[Microsoft Remote Desktop](https://itunes.apple.com/us/app/microsoft-remote-desktop/id715768417)，也可完美支持TSWF。
+    Win7天然就支持远程TSWF分发技术，Mac下仅需安装[Microsoft Remote Desktop](https://itunes.apple.com/us/app/microsoft-remote-desktop/id715768417)，也可完美支持TSWF，注意此软件需要使用英文市场下的id才能安装。
 
     无论是Win7还是Mac，目前都已经完美支持Remote APP技术，实现远程应用本地化的完美体验。
 

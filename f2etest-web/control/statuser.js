@@ -1,4 +1,4 @@
-var pool =require('../db.js');
+var pool =require('../lib/db.js');
 var async = require('async');
 
 module.exports = function(app, config) {
@@ -25,7 +25,10 @@ module.exports = function(app, config) {
             arrTasks.push(function(callback){
                 pool.query('select appId,count(0) as value from appLogs where LogTime >= ? and UserId = ? group by appId order by value desc;', [before30Day, userid], function(err, rows){
                     rows.forEach(function(row){
-                        row.name = mapAppList[row.appId].name;
+                        var appInfo = mapAppList[row.appId];
+                        if(appInfo){
+                            row.name = appInfo.name;
+                        }
                     });
                     callback(null, rows);
                 });
