@@ -33,30 +33,61 @@ var server = http.createServer(function(req, res){
                 var desiredCapabilities = json.desiredCapabilities;
                 var browserName = desiredCapabilities.browserName.toLowerCase();
                 var proxy = desiredCapabilities.proxy;
-                if(proxy && browserName === 'internet explorer'){
-                    var proxyType = proxy.proxyType || '';
-                    proxyType = proxyType.toLowerCase()
-                    var proxyAutoconfigUrl = proxy.proxyAutoconfigUrl;
-                    var httpProxy = proxy.httpProxy;
-                    switch(proxyType){
-                        case 'manual':
-                            if(httpProxy){
-                                setProxy(httpProxy);
-                            }
-                            break;
-                        case 'pac':
-                            if(proxyAutoconfigUrl){
-                                setPac(proxyAutoconfigUrl);
-                            }
-                            break;
-                        default:
-                            disableProxy();
-                    }
-                    desiredCapabilities.proxy = {
-                        'proxyType': 'SYSTEM'
-                    };
-                    body = JSON.stringify(json);
+                if(browserName === 'internet explorer'){
+					if(proxy){
+						var proxyType = proxy.proxyType || '';
+						proxyType = proxyType.toLowerCase()
+						var proxyAutoconfigUrl = proxy.proxyAutoconfigUrl;
+						var httpProxy = proxy.httpProxy;
+						switch(proxyType){
+							case 'manual':
+								if(httpProxy){
+									setProxy(httpProxy);
+								}
+								break;
+							case 'pac':
+								if(proxyAutoconfigUrl){
+									setPac(proxyAutoconfigUrl);
+								}
+								break;
+						}
+						desiredCapabilities.proxy = {
+							'proxyType': 'SYSTEM'
+						};
+						body = JSON.stringify(json);
+					}
+					else{
+						disableProxy();
+					}
                 }
+				else if(browserName === '360se'){
+					desiredCapabilities.browserName = 'chrome';
+					desiredCapabilities.chromeOptions = desiredCapabilities.chromeOptions || {};
+					desiredCapabilities.chromeOptions.binary = 'c:\\360\\360se6\\Application\\360se.exe';
+					desiredCapabilities.chromeOptions.args = ['--allow-no-sandbox-job', '--disable-bundled-ppapi-flash'];
+                    desiredCapabilities.chromeOptions.prefs = {
+                        'plugins.plugins_disabled': ['Adobe Flash Player']
+                    };
+					body = JSON.stringify(json);
+				}
+				else if(browserName === '360chrome'){
+					desiredCapabilities.browserName = 'chrome';
+					desiredCapabilities.chromeOptions = desiredCapabilities.chromeOptions || {};
+					desiredCapabilities.chromeOptions.binary = 'c:\\360\\360Chrome\\Chrome\\Application\\360chrome.exe';
+					desiredCapabilities.chromeOptions.args = ['--allow-no-sandbox-job', '--disable-bundled-ppapi-flash'];
+                    desiredCapabilities.chromeOptions.prefs = {
+                        'plugins.plugins_disabled': ['Adobe Flash Player']
+                    };
+					body = JSON.stringify(json);
+				}
+				else if(browserName === 'chrome'){
+					desiredCapabilities.chromeOptions = desiredCapabilities.chromeOptions || {};
+					desiredCapabilities.chromeOptions.args = ['--allow-no-sandbox-job', '--disable-bundled-ppapi-flash'];
+                    desiredCapabilities.chromeOptions.prefs = {
+                        'plugins.plugins_disabled': ['Adobe Flash Player']
+                    };
+					body = JSON.stringify(json);
+				}
             }
             catch(e){}
             var headers = req.headers;
@@ -97,7 +128,7 @@ var server = http.createServer(function(req, res){
 
 server.listen(proxyPort, function(){
     console.log('F2etest WebDriver proxy is ready: %s', proxyPort);
-    var jarPath = path.resolve(__dirname, './selenium-server-standalone-2.53.0.jar');
+    var jarPath = path.resolve(__dirname, './selenium-server-standalone-2.53.1.jar');
     cp.spawn('java', [
             '-jar',
             jarPath,

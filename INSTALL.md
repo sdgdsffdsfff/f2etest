@@ -1,7 +1,7 @@
 安装核心功能
 ===================
 
-安装前请加QQ交流群： 416221937 有任何问题请至群中咨询。(加入群时验证信息请填写：城市名+公司名，例如：杭州+阿里巴巴)
+安装前请加钉钉交流群：11779932(加入验证：F2etest)，下载钉钉：[https://www.dingtalk.com/](https://www.dingtalk.com/)
 
 1. 安装nodejs
 
@@ -80,10 +80,7 @@
 
     启动成功后，可以发现WEB服务默认工作在：3000端口号
 
-    小建议：
-
-    1. 为了方便用户使用，建议安装nginx等软件做反向代理，将80端口反向到3000端口，以将3000端口号隐藏起来。
-    2. 建议使用pm2或forever等组件实现系统开机自动运行。
+    然后安装nginx做反向代理，将80端口反向到3000端口，以将3000端口号隐藏起来。
 
     nginx反向配置如下：
 
@@ -94,6 +91,12 @@
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_buffering off;
         }
+
+    小建议：
+
+    1. 建议使用pm2或forever等组件实现系统开机自动运行。
+    2. 安装快捷方式到Windows桌面 (Win7)功能，需要让f2etest-web支持HTTPS协议，否则此功能无法正常使用
+
 
 6. 安装windows server机群
 
@@ -122,12 +125,12 @@
 
     提示及注意事项：
 
-    1. chrome由于和远程桌面有点小冲突，必需安装在2003操作系统中
+    1. chrome必需要安装standalone版本：[https://www.google.com/chrome/browser/desktop/index.html?system=true&standalone=1](https://www.google.com/chrome/browser/desktop/index.html?system=true&standalone=1)
     2. 使用频率比较低的浏览器，建议硬件配置可以适当降低
     3. 2008如果默认安装的是IE10浏览器，可以从安装补丁上卸载，从而降级到IE8，但是没办法降级到IE6或IE7
     4. 建议在任务计划程序中添加每周磁盘碎片整理，以保持最高工作性能
 
-    IE浏览器安全级别低解决方案：
+    IE浏览器安全级别低解决方案(此步骤非常重要，如果不操作，会出现cookie无法写入)：
 
     1. 以桌面模式连接一个User用户
     2. 按照需要自由配置IE
@@ -182,14 +185,13 @@
 
     hostsShare-client的bat可直接复制f2etest-client/app/中的：`禁用代理.bat`
 
-部署WebDriver云 & JS单元测试云 & 单测云
+部署WebDriver云
 ===========================
 
-1. 开启WebDriver功能：`conf/site.json`中的`wdEnabled`为`true`，此时重启f2etest-web，可以在上方菜单栏上看到：JS单测云 | WebDriver云
+1. 开启WebDriver功能：`conf/site.json`中的`wdEnabled`为`true`，此时重启f2etest-web，可以在上方菜单栏上看到：WebDriver云
 2. 初始化执行机节点：详细安装请查看[f2etest-client/f2etest-webdriver/节点部署教程.md](f2etest-client/f2etest-webdriver/节点部署教程.md)
 
-经过上面的安装过程，我们的WebDriver云及JS单测云即已经部署完成，可以对外服务了。
-
+经过上面的安装过程，我们的WebDriver云即已经部署完成，可以对外服务了。
 
 f2etest v1.0.0系列如何升级到v2.0.0 v3.0.0
 ========================
